@@ -37,18 +37,11 @@ namespace AsyncVoid
         {
         }
 
-        private async void OnTestCommand(object sender, RoutedEventArgs e)
+        private void OnTestCommand(object sender, RoutedEventArgs e)
         {
             var viewModel = (DataContext as SampleViewModel);
 
-            try
-            {
-                await viewModel.Update();
-            }
-            catch (Exception ex)
-            {
-                viewModel.Messages.Add(ex.ToString());
-            }
+            viewModel.Update().FireAndForget((ex) => viewModel.Messages.Add(ex.ToString()));
         }
     }
 }
