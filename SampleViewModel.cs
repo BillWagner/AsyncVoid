@@ -39,10 +39,11 @@ namespace AsyncVoid
         {
             var generator = new Random();
 
-            await updateLeft(generator);
+            var left = updateLeft(generator);
 
-            await updateRight(generator);
+            var right = updateRight(generator);
 
+            await Task.WhenAll(left, right);
             await updateTotal(generator);
 
             await Task.Delay(1000);
