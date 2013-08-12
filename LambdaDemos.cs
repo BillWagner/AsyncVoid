@@ -9,12 +9,12 @@ namespace AsyncVoid
     class LambdaDemos
     {
 
-        public void Method()
+        public async Task Method()
         {
             Action foo = async () => await Task.Yield();
             Func<Task> bar = async () => await Task.Yield();
 
-            APIMethod(async () => await Task.Yield()); // resolves to?
+            await APIMethod(async () => await Task.Yield()); // resolves to?
         }
 
         public void APIMethod(Action act)
