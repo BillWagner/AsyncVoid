@@ -35,7 +35,7 @@ namespace AsyncVoid
             AnswerBackground = brush1;
         }
         
-        public async void Update()
+        public async Task Update()
         {
             var generator = new Random();
 
