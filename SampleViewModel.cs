@@ -39,18 +39,18 @@ namespace AsyncVoid
         {
             var generator = new Random();
 
-            updateLeft(generator);
+            await updateLeft(generator);
 
-            updateRight(generator);
+            await updateRight(generator);
 
-            updateTotal(generator);
+            await updateTotal(generator);
 
             await Task.Delay(1000);
             if (Answer != LeftOperand + RightOperand)
                 throw new InvalidOperationException("This just failed");
         }
 
-        private async void updateTotal(Random generator)
+        private async Task updateTotal(Random generator)
         {
             messages.Add("Updating total: Starting");
             await Task.Delay(generator.Next(0, 1000));
@@ -61,7 +61,7 @@ namespace AsyncVoid
             messages.Add("Updating total: Finished");
         }
 
-        private async void updateRight(Random generator)
+        private async Task updateRight(Random generator)
         {
             messages.Add("Calculating Right Operand: Starting");
             await Task.Delay(generator.Next(0,1000));
@@ -72,7 +72,7 @@ namespace AsyncVoid
             messages.Add("Calculating Right Operand:  Finished");
         }
 
-        private async void updateLeft(Random generator)
+        private async Task updateLeft(Random generator)
         {
             messages.Add("Calculating Left Operand: Starting");
             await Task.Delay(generator.Next(0, 1000));
