@@ -38,7 +38,6 @@ namespace AsyncVoid
         public async Task Update()
         {
             var generator = new Random();
-
             var left = updateLeft(generator);
 
             var right = updateRight(generator);
