@@ -41,7 +41,8 @@ namespace AsyncVoid
         {
             var viewModel = (DataContext as SampleViewModel);
 
-            viewModel.Update().FireAndForget((ex) => viewModel.Messages.Add(ex.ToString()));
+            viewModel.Update();
+            // .FireAndForget((ex) => viewModel.Messages.Add(ex.ToString()));
         }
     }
 }

@@ -28,6 +28,7 @@ namespace AsyncVoid
         public Brush RightBackground { get; set; }
         public Brush AnswerBackground { get; set; }
 
+        public int Progress { get; set; }
         public SampleViewModel()
         {
             LeftBackground = brush1;
@@ -35,25 +36,52 @@ namespace AsyncVoid
             AnswerBackground = brush1;
         }
         
-        public async Task Update()
+        public async void Update()
+        {
+            try
+            {
+                await UpdateImplAsync();
+            }catch (Exception e)
+            {
+                messages.Add(e.ToString());
+            }
+        }
+
+        private async Task UpdateImplAsync()
         {
             var generator = new Random();
-            var left = updateLeft(generator);
 
-            var right = updateRight(generator);
+            var reporter = new Progress<bool>((b) => 
+            {
+                Progress += 33;
+                this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
+            });
 
-            await Task.WhenAll(left, right);
-            await updateTotal(generator);
+            Progress = 0;
+            this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
 
-            await Task.Delay(1000);
+            var leftTask = updateLeftAsync(generator, reporter);
+
+            var rightTask = updateRightAsync(generator, reporter);
+
+            await Task.WhenAll(leftTask, rightTask);
+
+            await updateTotalAsync(generator, reporter);
+
+            await Task.Delay(generator.Next(0, 2000));
+
+            Progress = 100;
+            this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
+
             if (Answer != LeftOperand + RightOperand)
                 throw new InvalidOperationException("This just failed");
         }
 
-        private async Task updateTotal(Random generator)
+        private async Task updateTotalAsync(Random generator, IProgress<bool> reporter)
         {
             messages.Add("Updating total: Starting");
-            await Task.Delay(generator.Next(0, 1000));
+            await Task.Delay(generator.Next(0, 2000));
+            reporter.Report(true);
             Answer = LeftOperand + RightOperand;
             AnswerBackground = switchBackground(AnswerBackground);
             this.PropertyChanged(this, new PropertyChangedEventArgs("AnswerBackground"));
@@ -61,10 +89,11 @@ namespace AsyncVoid
             messages.Add("Updating total: Finished");
         }
 
-        private async Task updateRight(Random generator)
+        private async Task updateRightAsync(Random generator, IProgress<bool> reporter)
         {
             messages.Add("Calculating Right Operand: Starting");
-            await Task.Delay(generator.Next(0,1000));
+            await Task.Delay(generator.Next(0, 2000));
+            reporter.Report(true);
             RightOperand = generator.Next(-1000, 1000);
             RightBackground = switchBackground(RightBackground);
             this.PropertyChanged(this, new PropertyChangedEventArgs("RightBackground"));
@@ -72,10 +101,11 @@ namespace AsyncVoid
             messages.Add("Calculating Right Operand:  Finished");
         }
 
-        private async Task updateLeft(Random generator)
+        private async Task updateLeftAsync(Random generator, IProgress<bool> reporter)
         {
             messages.Add("Calculating Left Operand: Starting");
-            await Task.Delay(generator.Next(0, 1000));
+            await Task.Delay(generator.Next(0, 2000)).ConfigureAwait(false);
+            reporter.Report(true);
             LeftOperand = generator.Next(-1000, 1000);
             LeftBackground = switchBackground(LeftBackground);
             this.PropertyChanged(this, new PropertyChangedEventArgs("LeftBackground"));
