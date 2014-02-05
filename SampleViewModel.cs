@@ -35,13 +35,14 @@ namespace AsyncVoid
             RightBackground = brush1;
             AnswerBackground = brush1;
         }
-        
+
         public async void Update()
         {
             try
             {
                 await UpdateImplAsync();
-            }catch (Exception e)
+            }
+            catch (Exception e)
             {
                 messages.Add(e.ToString());
             }
@@ -51,7 +52,7 @@ namespace AsyncVoid
         {
             var generator = new Random();
 
-            var reporter = new Progress<bool>((b) => 
+            var reporter = new Progress<bool>((b) =>
             {
                 Progress += 33;
                 this.PropertyChanged(this, new PropertyChangedEventArgs("Progress"));
@@ -104,7 +105,7 @@ namespace AsyncVoid
         private async Task updateLeftAsync(Random generator, IProgress<bool> reporter)
         {
             messages.Add("Calculating Left Operand: Starting");
-            await Task.Delay(generator.Next(0, 2000)).ConfigureAwait(false);
+            await Task.Delay(generator.Next(0, 2000));
             reporter.Report(true);
             LeftOperand = generator.Next(-1000, 1000);
             LeftBackground = switchBackground(LeftBackground);
